@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="../stylesheets/index_style.css">
+    <script>
+        // описываем функцию, которая будет вызвана из бразуера
+        function getGoods() {
+            // создаем оъект запроса
+            var xmlhttp = new XMLHttpRequest();
+            // указываем url, куда будет отправлен запрос
+            var url = "/goods";
+
+            // описываем функцию,которая будет срабатывать
+            // при корректной обработке запроса сервером
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    // получаем список людей в формате JSON
+                    var goods = JSON.parse(this.responseText);
+                    // получаем объект на странице по его id
+                    var usersTable = document.getElementById('goods_table');
+                    // готовим html-код, который нужно будет поместить
+                    // внутри таблицы
+                    var htmlUsersResult = "";
+
+                    htmlUsersResult += '<tr>' + '<td>' + 'Наименование' + '</td>';
+                    htmlUsersResult += '<td>' + 'Цена' + '</td>';
+                    htmlUsersResult += '<td>' + 'Заказать' + '</td>' + '</tr>';
+                    for (var i = 0; i < goods.length - 1; i++) {
+                        htmlUsersResult += '<tr>';
+                        htmlUsersResult += '<td><input type="hidden" name="' + i + '" value="' + goods[i].name
+                            + '===' + goods[i].price + '">' + goods[i].name + '</div></td>';
+                        htmlUsersResult += '<td><div name="b' + i + '">' +
+                            goods[i].price + '</div></td>';
+                        htmlUsersResult += '<td>' + '<input type="checkbox" name="' +
+                            i + '">' + '</td>';
+                        htmlUsersResult += '</tr>';
+                    }
+                    usersTable.innerHTML = htmlUsersResult;
+                }
+            };
+            xmlhttp.open("GET", url, true);
+            xmlhttp.send();
+        }
+    </script>
+    <script>
+        // описываем функцию, которая будет вызвана из бразуера
+        function getBuyers() {
+            // создаем оъект запроса
+            var xmlhttp = new XMLHttpRequest();
+            // указываем url, куда будет отправлен запрос
+            var url = "/buyers";
+
+            // описываем функцию,которая будет срабатывать
+            // при корректной обработке запроса сервером
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    // получаем список людей в формате JSON
+                    var buyers = JSON.parse(this.responseText);
+                    // получаем объект на странице по его id
+                    var buyersList = document.getElementById('buyers_list');
+                    // готовим html-код, который нужно будет поместить
+                    // внутри таблицы
+                    var htmlUsersResult = "";
+                    htmlUsersResult += '<option disabled selected>' + 'Заказчик' + '</option>';
+                    for (var i = 0; i < buyers.length - 1; i++) {
+                        htmlUsersResult += '<option>';
+                        htmlUsersResult += buyers[i].name;
+                        htmlUsersResult += '</option>';
+                    }
+                    buyersList.innerHTML = htmlUsersResult;
+                }
+            };
+            xmlhttp.open("GET", url, true);
+            xmlhttp.send();
+        }
+    </script>
+</head>
+<body class="container" style="background: whitesmoke; font-family: 'Adobe Garamond Pro',serif; position: relative"
+      onload="getBuyers(),getGoods()">
+<header class="container" style="height: 60px; background: mintcream">
+    <h1 style="position: absolute; left:20px">Каталог товаров</h1>
+    <nav class="nav" style="position: absolute; right: 5px;">
+        <a class="nav-link" href="./orders.html">
+            <button class="btn btn-info" type="button">Корзина</button>
+        </a>
+    </nav>
+</header>
+<main class="container" style="position: relative; top: 10px; float: left; ">
+    <article class="container" style="">
+        <form method="post" action="/orders">
+            <table class="table table-sm" style="font-size: larger;" id="goods_table">
+            </table>
+            <select id="buyers_list" name="buyers">
+            </select>
+            <input class="btn btn-primary" type="submit" value="Добавить в корзину">
+        </form>
+    </article>
+    <article class="container" style="position: relative; top: -30px; left:70%;">
+        <!--Форма, отправляющая post-запрос на адрес /users с
+        телом запроса, в котором будут параметры name и surname -->
+        <div class="form-group">
+            <form  method="post" action="../goods">
+                <label for="name-input">Название товара</label>
+                <input id='name-input' type="text" name="name">
+                <br>
+                <label for="price-input">Цена</label>
+                <input id='price-input' type="number" name="price">
+                <br>
+                <input class="btn btn-primary" type="submit" name="">
+            </form>
+        </div>
+    </article>
+</main>
+</body>
+</html>

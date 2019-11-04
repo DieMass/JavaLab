@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script>
+        // описываем функцию, которая будет вызвана из бразуера
+        function getOrders() {
+            // создаем оъект запроса
+            var xmlhttp = new XMLHttpRequest();
+            // указываем url, куда будет отправлен запрос
+            var url = "/orders";
+
+            // описываем функцию,которая будет срабатывать
+            // при корректной обработке запроса сервером
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    // получаем список людей в формате JSON
+                    var orders = JSON.parse(this.responseText);
+                    // получаем объект на странице по его id
+                    var usersTable = document.getElementById('orders_table');
+                    // готовим html-код, который нужно будет поместить
+                    // внутри таблицы
+                    var htmlUsersResult = "";
+
+                    htmlUsersResult += '<tr>' + '<td>' + 'Заказчик' + '</td>';
+                    htmlUsersResult += '<td>' + 'Наименование' + '</td>';
+                    htmlUsersResult += '<td>' + 'Цена' + '</td>' + '</tr>';
+                    for (var i = 0; i < orders.length; i++) {
+                        htmlUsersResult += '<tr>';
+                        htmlUsersResult += '<td><pre style="font-family: \'Adobe Garamond Pro\',serif; font-size: medium">' + orders[i].buyer + '</pre></td>';
+                        htmlUsersResult += '<td><pre style="font-family: \'Adobe Garamond Pro\',serif; font-size: medium">' + orders[i].goods + '</pre></td>';
+                        htmlUsersResult += '<td><pre style="font-family: \'Adobe Garamond Pro\',serif; font-size: medium">' + orders[i].prices + '</pre></td>';
+                        htmlUsersResult += '</tr>';
+                        // htmlUsersResult += '<option>';
+                        // htmlUsersResult += goods[i].name + " " + goods[i].price;
+                        // htmlUsersResult += '</optiom>';
+                    }
+                    usersTable.innerHTML = htmlUsersResult;
+                }
+            };
+            xmlhttp.open("GET", url, true);
+            xmlhttp.send();
+        }
+    </script>
+</head>
+<body class="container" style="background: whitesmoke; font-family: 'Adobe Garamond Pro',serif; font-size: larger; position: relative;" onload="getOrders()">
+<header class="container" style="height: 60px; background: mintcream">
+    <h1 style="position: absolute; left:20px">Заказы</h1>
+    <nav class="nav" style="position: absolute; right: 5px;">
+        <a class="nav-link" href="./index.html">
+            <button class="btn btn-info" type="button">Главная</button>
+        </a>
+    </nav>
+</header>
+<!--<header style="background: cornsilk;">
+    <nav class="nav">
+        <a class="nav-link" href="./index.html"><button class="btn btn-info" type="button">На главную</button></a>
+    </nav>
+    <h2 style="position: relative; top: 20px" style="float: left" >Заказы</h2>
+</header>-->
+<div class="container" style="position: relative; top: 20px" >
+    <table class="table table-sm" id="orders_table">
+    </table>
+</div>
+</body>
+</html>
