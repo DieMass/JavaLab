@@ -4,18 +4,57 @@ package die.mass.protocol;
 import java.util.ArrayList;
 
 public class Payload {
+    Long id;
     String name;
-    String date;
     String password;
+    String role;
+    String date;
     String message;
     String command;
     Integer page;
     Integer size;
+    Integer price;
     Boolean isCorrect;
-    ArrayList<Message> data;
+    ArrayList<Payload> data;
     String time;
     String token;
     Boolean tokenExists;
+
+    public Payload(Long id, String name, Integer price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
+    public Payload(String name, String message, String date) {
+        this.name = name;
+        this.message = message;
+        this.date = date;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String  getRole() {
+        return role;
+    }
+
+    public void setRole(String  role) {
+        this.role = role;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
 
     public Boolean getTokenExists() {
         return tokenExists;
@@ -41,11 +80,11 @@ public class Payload {
         this.time = time;
     }
 
-    public ArrayList<Message> getData() {
+    public ArrayList<Payload> getData() {
         return data;
     }
 
-    public void setData(ArrayList<Message> data) {
+    public void setData(ArrayList<Payload> data) {
         this.data = data;
     }
 
@@ -58,12 +97,6 @@ public class Payload {
     }
 
     public Payload() { }
-
-    public Payload(String name, String message, String date) {
-        this.name = name;
-        this.message = message;
-        this.date = date;
-    }
 
     public String getName() {
         return name;

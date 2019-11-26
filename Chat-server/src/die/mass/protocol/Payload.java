@@ -14,6 +14,24 @@ public class Payload {
     Boolean isCorrect;
     ArrayList<Message> data;
     String time;
+    String token;
+    Boolean tokenExists;
+
+    public Boolean getTokenExists() {
+        return tokenExists;
+    }
+
+    public void setTokenExists(Boolean tokenExists) {
+        this.tokenExists = tokenExists;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public String getTime() {
         return time;

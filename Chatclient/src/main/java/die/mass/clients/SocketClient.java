@@ -39,7 +39,7 @@ public class SocketClient {
                 if (isSignUp()) {
                     setNameAndPassword();
                     protocolOut.setHeader("SignUp");
-//                    System.out.println("CLIENTLOG now prot is " + getValueAsString(protocolOut));
+                    System.out.println("CLIENTLOG now prot is " + getValueAsString(protocolOut));
                     f = isUserExists(protocolOut);
                     if (!f) {
                         System.err.println("USER ALREADY EXISTS");
@@ -53,7 +53,7 @@ public class SocketClient {
                         out.println(getValueAsString(protocolOut));
                     }
                 } else {
-                    if(!new File("../token").exists()) {
+                    if (!new File("../token").exists()) {
                         setNameAndPassword();
                     } else {
                         setToken();
@@ -101,11 +101,13 @@ public class SocketClient {
     }
 
     private void setNameAndPassword() {
-            System.out.print("Print name: ");
-            protocolOut.getPayload().setName(scanner.nextLine());
-            System.out.print("Print password: ");
-            protocolOut.getPayload().setPassword(scanner.nextLine());
-            protocolOut.getPayload().setTokenExists(false);
+        System.out.print("Print name: ");
+        protocolOut.getPayload().setName(scanner.nextLine());
+        System.out.print("Print password: ");
+        protocolOut.getPayload().setPassword(scanner.nextLine());
+        System.out.print("Print role (1 if admin, 0 if user): ");
+        protocolOut.getPayload().setRole(String.valueOf(scanner.nextInt()));
+        protocolOut.getPayload().setTokenExists(false);
     }
 
     private boolean isSignUp() {
@@ -144,24 +146,42 @@ public class SocketClient {
     private Protocol getValue(String string) {
         try {
             return objectMapper.readValue(string, Protocol.class);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-
     public void sendMessage(String text) {
         protocolOut.setPayload(new Payload());
-        if (text.equals("getHistory")) {
-            protocolOut.setHeader("Command");
-            protocolOut.getPayload().setSize(scanner.nextInt());
-            protocolOut.getPayload().setPage(scanner.nextInt());
-        } else if (text.equals(".")){
-            protocolOut.setHeader("LogOut");
-        }
-            else  {
-            protocolOut.setHeader("Message");
-            protocolOut.getPayload().setMessage(text);
+        protocolOut.getPayload().setToken(getToken());
+        protocolOut.setHeader("Command");
+        switch (text) {
+            case "getHistory":
+                protocolOut.getPayload().setCommand("history");
+                protocolOut.getPayload().setSize(scanner.nextInt());
+                protocolOut.getPayload().setPage(scanner.nextInt());
+                break;
+            case ".":
+                protocolOut.setHeader("LogOut");
+                break;
+            case "showGoods":
+                protocolOut.getPayload().setCommand("showGoods");
+                break;
+            case "buy":
+                protocolOut.getPayload().setCommand("buy");
+                protocolOut.getPayload().setId(scanner.nextLong());
+                break;
+            case "addGood":
+                protocolOut.getPayload().setCommand("addGood");
+                System.out.println("Create good\nSet name");
+                protocolOut.getPayload().setName(scanner.nextLine());
+                System.out.println("Set price");
+                protocolOut.getPayload().setPrice(scanner.nextInt());
+                break;
+            default:
+                protocolOut.setHeader("Message");
+                protocolOut.getPayload().setMessage(text);
+                break;
         }
         out.println(getValueAsString(protocolOut));
     }
@@ -170,26 +190,45 @@ public class SocketClient {
         @Override
         public void run() {
             while (true) {
+                String response = "";
                 try {
-                    String response = in.readLine();
-                    if (response != null) {
+                    response = in.readLine();
+                } catch (IOException e) {
+                    //  throw new IllegalStateException(e);
+                }
+                try {
+                    if (response != null && !response.equals("")) {
 //                        System.out.println(response);
                         protocolIn = objectMapper.readValue(response, Protocol.class);
-                        if(protocolIn.getHeader().equals("LogOut")) {
-                            System.out.println(protocolIn.getPayload().getName() + " said \"bye\" everyone at " + protocolIn.getPayload().getTime());
-                        } else if(protocolIn.getHeader().equals("Login")) {
-                            System.out.println(protocolIn.getPayload().getName() + " connect to server at " + protocolIn.getPayload().getTime());
-                        } else if(protocolIn.getHeader().equals("Command")) {
-                            if(protocolIn.getPayload().getCommand().equals("Login")) {
-
-                            } else {
-                                System.out.println("History:");
-                                for (Message message : protocolIn.getPayload().getData()) {
-                                    System.out.println(message.getName() + " says \"" + message.getMessage() + "\" at " + message.getTime());
+                        switch (protocolIn.getHeader()) {
+                            case "LogOut":
+                                System.out.println(protocolIn.getPayload().getName() + " said \"bye\" everyone at " + protocolIn.getPayload().getTime());
+                                stopConnection();
+                                break;
+                            case "Login":
+                                System.out.println(protocolIn.getPayload().getName() + " connect to server at " + protocolIn.getPayload().getTime());
+                                break;
+                            case "Command":
+                                String command = protocolIn.getPayload().getCommand();
+                                switch (command) {
+                                    case "history":
+                                        System.out.println("History:");
+                                        for (Payload payload : protocolIn.getPayload().getData()) {
+                                            System.out.println(payload.getName() + " says \"" + payload.getMessage() + "\" at " + payload.getTime());
+                                        }
+                                        break;
+                                    case "showGoods":
+                                        for (Payload payload : protocolIn.getPayload().getData()) {
+                                            System.out.println(payload.getId() + " --- " + payload.getName() + " --- " + payload.getPrice());
+                                        }
+                                        break;
+                                    case "message":
+                                        System.out.println(protocolIn.getPayload().getMessage());
                                 }
-                            }
-                        } else {
-                            System.out.println(protocolIn.getPayload().getName() + " says \"" + protocolIn.getPayload().getMessage() + "\" at " + protocolIn.getPayload().getTime());
+                                break;
+                            default:
+                                System.out.println(protocolIn.getPayload().getName() + " says \"" + protocolIn.getPayload().getMessage() + "\" at " + protocolIn.getPayload().getTime());
+                                break;
                         }
                     }
                 } catch (IOException e) {
@@ -205,7 +244,7 @@ public class SocketClient {
             out.close();
             clientSocket.close();
         } catch (IOException e) {
-            throw new IllegalStateException(e);
+//            throw new IllegalStateException(e);
         }
     }
 }

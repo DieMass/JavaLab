@@ -9,13 +9,6 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 12.02.2019
- * ProgramClientChatStart
- *
- * @author Sidikov Marsel (First Software Engineering Platform)
- * @version v1.0
- */
 @Parameters(separators = "=")
 public class ProgramClientChatStart {
 

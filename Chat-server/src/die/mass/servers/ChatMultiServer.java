@@ -32,6 +32,7 @@ public class ChatMultiServer {
     private Protocol protocolOut = new Protocol();
     private Protocol protocolIn = new Protocol();
     private PasswordEncoder encoder;
+    private GetTokenServiceImpl getTokenService = new GetTokenServiceImpl("qwerty007");
 
     public ChatMultiServer() {
         // Список для работы с многопоточностью
@@ -78,13 +79,19 @@ public class ChatMultiServer {
                         new InputStreamReader(clientSocket.getInputStream()));
                 out = new PrintWriter(clientSocket.getOutputStream(), true);
                 boolean f;
-                String string;
                 do {
                     parseString();
                     if (protocolIn.getHeader().equals("SignUp")) {
-                        f = checkToNotExists();
-                        if (f) saveUser(name, password);
-                    } else f = checkToExists();
+                        f = checkToNotExistsWithLogin();
+                        if (f) {
+                            saveUser(name, password);
+                            checkToExistsWithLogin();
+                        }
+                    } else {
+                        if(protocolIn.getPayload().getTokenExists()) {
+                            f = checkToExistsWithToken();
+                        } else f = checkToExistsWithLogin();
+                    }
                 } while (!f);
                 System.out.println("New client " + name);
             } catch (IOException e) {
@@ -96,14 +103,14 @@ public class ChatMultiServer {
         private void parseString() {
             try {
                 String string = in.readLine();
-                System.out.println("input string is " + string);
+//                System.out.println("input string is " + string);
                 protocolIn = objectMapper.readValue(string, Protocol.class);
             } catch (IOException e) {
                 throw new IllegalStateException(e);
             }
         }
 
-        private boolean checkToNotExists() {
+        private boolean checkToNotExistsWithLogin() {
             name = protocolIn.getPayload().getName();
             password = protocolIn.getPayload().getPassword();
             boolean f = !accountExists(name, password);
@@ -111,8 +118,9 @@ public class ChatMultiServer {
             protocolOut.setPayload(new Payload());
             protocolOut.getPayload().setCommand("Login");
             protocolOut.getPayload().setCorrect(f);
+            if (f) protocolOut.getPayload().setToken(getTokenService.getToken(name, password, "user"));
             try {
-                System.out.println("SERVERLOG: checkToNotExists() " + objectMapper.writeValueAsString(protocolOut));
+//                System.out.println("SERVERLOG: checkToNotExists() " + objectMapper.writeValueAsString(protocolOut));
                 out.println(objectMapper.writeValueAsString(protocolOut));
             } catch (JsonProcessingException e) {
                 throw new IllegalStateException(e);
@@ -120,16 +128,28 @@ public class ChatMultiServer {
             return f;
         }
 
-        private boolean checkToExists() {
+        private boolean checkToExistsWithLogin() {
             name = protocolIn.getPayload().getName();
             password = protocolIn.getPayload().getPassword();
+            return checkToExists();
+        }
+
+        private boolean checkToExistsWithToken() {
+            String token = protocolIn.getPayload().getToken();
+            name = getTokenService.getData(token, "name");
+            password = getTokenService.getData(token, "password");
+            return checkToExists();
+        }
+
+        private boolean checkToExists() {
             boolean f = accountExists(name, password);
             protocolOut.setPayload(new Payload());
             protocolOut.setHeader("Command");
             protocolOut.getPayload().setCommand("Login");
             protocolOut.getPayload().setCorrect(f);
+
             try {
-                System.out.println("SERVERLOG: checkToExists() " + objectMapper.writeValueAsString(protocolOut));
+//                System.out.println("SERVERLOG: checkToExists() " + objectMapper.writeValueAsString(protocolOut));
                 out.println(objectMapper.writeValueAsString(protocolOut));
             } catch (IOException e) {
                 throw new IllegalStateException(e);
@@ -139,11 +159,9 @@ public class ChatMultiServer {
 
         private boolean accountExists(String name, String password) {
             String p = dbLoader.findUser(name);
-//            System.out.println("p = " + p);
-//            System.out.println("password = " + password);
-//            System.out.println(encoder.encode(password));
             return encoder.matches(password, p);
         }
+
 
         private boolean saveUser(String name, String password) {
             return dbLoader.saveUser(name, encoder.encode(password));
@@ -178,7 +196,7 @@ public class ChatMultiServer {
                         Integer size = protocolIn.getPayload().getSize();
                         protocolOut.setHeader("Command");
                         protocolOut.setPayload(new Payload());
-                        protocolOut.getPayload().setData(new ArrayList(dbLoader.getHistory(size, page).stream().map(i -> new Message(i.getName(),i.getContent(), i.getTime())).collect(Collectors.toList())));
+                        protocolOut.getPayload().setData(new ArrayList(dbLoader.getHistory(size, page).stream().map(i -> new Message(i.getName(), i.getContent(), i.getTime())).collect(Collectors.toList())));
                         out.println(objectMapper.writeValueAsString(protocolOut));
                     } else {
                         localTime = LocalTime.now();
