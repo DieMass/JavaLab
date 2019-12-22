@@ -2,10 +2,12 @@ package die.mass.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import die.mass.dto.UserAuthDTO;
 import die.mass.models.User;
 import die.mass.protocol.Payload;
 import die.mass.protocol.Protocol;
 import die.mass.repositories.UserRepository;
+import die.mass.servers.Component;
 import die.mass.servers.GetTokenServiceImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,23 +15,30 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class LoginService {
+public class LoginService implements Service{
 
     private Protocol protocolIn;
-    private Protocol protocolOut;
+    private Protocol protocolOut = new Protocol();
     private UserRepository userRepository;
     private GetTokenServiceImpl getTokenService;
     private ObjectMapper objectMapper;
     private PrintWriter out;
     private PasswordEncoder encoder;
 
-    public LoginService(UserRepository userRepository, Protocol protocolIn, Protocol protocolOut, GetTokenServiceImpl getTokenService) {
-        this.userRepository = userRepository;
-        this.protocolIn = protocolIn;
-        this.protocolOut = protocolOut;
+    public LoginService() {
         this.encoder = new BCryptPasswordEncoder();
-        this.getTokenService = getTokenService;
         this.objectMapper = new ObjectMapper();
+    }
+
+    @Override
+    public <Q extends Component> void setField(Q object) {
+        if(UserRepository.class.isAssignableFrom(object.getClass())) {
+            this.userRepository = (UserRepository) object;
+        } else if(GetTokenServiceImpl.class.isAssignableFrom(object.getClass())) {
+            this.getTokenService = (GetTokenServiceImpl) object;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     public String parse(Protocol protocolIn, PrintWriter out) {
@@ -41,7 +50,8 @@ public class LoginService {
                 f = checkToNotExistsWithLogin();
                 if (f) {
                     name = protocolIn.getPayload().getName();
-                    saveUser(name, protocolIn.getPayload().getPassword());
+                    saveUser(UserAuthDTO.newBuilder().setName(name).setIsAdmin(protocolIn.getPayload().getRole().equals("1")).
+                            setPassword(protocolIn.getPayload().getPassword()).build());
                     checkToExistsWithLogin();
                 }
             } else if(protocolIn.getHeader().equals("Login")) {
@@ -114,7 +124,7 @@ public class LoginService {
     }
 
 
-    private boolean saveUser(String name, String password) {
-        return userRepository.save(new User(null,name, encoder.encode(password)));
+    private boolean saveUser(UserAuthDTO dto) {
+        return userRepository.save(new User(null,dto.getName(), encoder.encode(dto.getPassword()), dto.getAdmin()));
     }
 }

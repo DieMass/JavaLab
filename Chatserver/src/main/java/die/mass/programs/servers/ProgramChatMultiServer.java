@@ -9,7 +9,7 @@ import die.mass.servers.ChatMultiServer;
 public class ProgramChatMultiServer {
 
     @Parameter(names = {"--db-properties"})
-    private static String pathToProperties = "/media/diemass/DATA/Projects/Java/Education/JavaLab/Chat-server/db.properties";
+    private String pathToProperties = "/media/diemass/DATA/Projects/Java/Education/JavaLab/Chatserver/src/main/resources/db.properties";
     //    private static String pathToProperties = "D:\\Projects\\Java\\Education\\JavaLab\\Chat\\db.properties";
     @Parameter(names = {"--port"})
     private static int port = 6666;

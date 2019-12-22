@@ -23,8 +23,8 @@ public class ChatMultiServer {
 
     public void start(int port, String pathToProperties) {
         ServerSocket serverSocket;
-        serverContext = new ServerContext(pathToProperties, clients);
-        messageResolver = new MessageResolver(serverContext);
+        serverContext = new ServerContext(pathToProperties);
+        messageResolver = new MessageResolver(serverContext, clients);
 
         try {
             serverSocket = new ServerSocket(port);

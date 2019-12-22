@@ -1,13 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>die.mass</groupId>
     <artifactId>Chat-server</artifactId>
     <version>0.0.1</version>
+
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
+
     <dependencies>
         <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
         <dependency>
@@ -53,7 +56,20 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.common/google-collect -->
+        <dependency>
+            <groupId>com.google.common</groupId>
+            <artifactId>google-collect</artifactId>
+            <version>1.0-rc1</version>
+        </dependency>
+
     </dependencies>
+
     <build>
         <plugins>
             <plugin>

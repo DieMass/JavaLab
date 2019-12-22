@@ -1,9 +1,12 @@
 package die.mass.repositories;
 
+import die.mass.servers.Component;
+
 import java.util.List;
 import java.util.Optional;
 
-public interface CrudRepository<T, ID>  {
+public interface CrudRepository<T, ID>  extends Component {
+
     boolean save(T model);
     void update(T model);
     void delete(ID id);

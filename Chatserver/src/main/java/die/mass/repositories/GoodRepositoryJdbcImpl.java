@@ -2,15 +2,17 @@ package die.mass.repositories;
 
 import die.mass.models.Good;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class GoodRepositoryJdbcImpl implements GoodRepository {
+public class GoodRepositoryJdbcImpl extends CrudRepositoryAbstractImpl<Good, Long> implements GoodRepository {
 
-    private Connection connection;
-
+    private ConnectionWrap connectionWrap;
 
     private final String tableName = "good";
     //language=SQL
@@ -23,9 +25,7 @@ public class GoodRepositoryJdbcImpl implements GoodRepository {
     private final String SQL_DELETE_GOOD = "DELETE FROM " + tableName +
             " where id = ?;";
 
-    public GoodRepositoryJdbcImpl(Connection connection) {
-        this.connection = connection;
-    }
+    public GoodRepositoryJdbcImpl() { }
 
     //позволяет преобразовывать строку из бд в объект
     private RowMapper<Good> userRowMapper = row -> {
@@ -38,7 +38,7 @@ public class GoodRepositoryJdbcImpl implements GoodRepository {
     @Override
     public boolean save(Good model) {
         try {
-            PreparedStatement statement = connection.prepareStatement(SQL_INSERT_GOOD,
+            PreparedStatement statement = connectionWrap.getConnection().prepareStatement(SQL_INSERT_GOOD,
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, model.getName());
             statement.setInt(2, model.getPrice());
@@ -70,7 +70,7 @@ public class GoodRepositoryJdbcImpl implements GoodRepository {
 
     @Override
     public void delete(Long aLong) {
-        try (PreparedStatement statement = connection.prepareStatement(SQL_DELETE_GOOD, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = connectionWrap.getConnection().prepareStatement(SQL_DELETE_GOOD, Statement.RETURN_GENERATED_KEYS)) {
             // Добавление значений параметров 1-4 в SQL апросе
             statement.setLong(1, aLong);
             // Выполнение запроса
@@ -97,7 +97,7 @@ public class GoodRepositoryJdbcImpl implements GoodRepository {
     public List<Good> findAll() {
         List<Good> result = new ArrayList<>();
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connectionWrap.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from " + tableName + ";");
 
             while (resultSet.next()) {

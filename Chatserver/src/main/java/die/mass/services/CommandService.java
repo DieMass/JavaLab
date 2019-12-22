@@ -6,21 +6,31 @@ import die.mass.protocol.Payload;
 import die.mass.protocol.Protocol;
 import die.mass.repositories.GoodRepository;
 import die.mass.repositories.MessageRepository;
+import die.mass.servers.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CommandService {
+public class CommandService implements Service{
 
     private MessageRepository messageRepository;
     private GoodRepository goodRepository;
     private AdminService adminService;
 
-    public CommandService(MessageRepository messageRepository, GoodRepository goodRepository, AdminService adminService) {
-        this.messageRepository = messageRepository;
-        this.goodRepository = goodRepository;
-        this.adminService = adminService;
+    public CommandService() { }
+
+    @Override
+    public <Q extends Component> void setField(Q object) {
+        if(MessageRepository.class.isAssignableFrom(object.getClass())) {
+            this.messageRepository = (MessageRepository) object;
+        } else if(GoodRepository.class.isAssignableFrom(object.getClass())) {
+            this.goodRepository = (GoodRepository) object;
+        } else if(AdminService.class.isAssignableFrom(object.getClass())) {
+            this.adminService = (AdminService) object;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Protocol createOut(Protocol protocolIn) {

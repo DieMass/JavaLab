@@ -8,13 +8,11 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 
 import java.util.*;
 
-public class GetTokenServiceImpl {
+public class GetTokenServiceImpl implements Component {
 
-    final String key;
+    final String key = "qwerty007";
 
-    public GetTokenServiceImpl(String key) {
-        this.key = key;
-    }
+    public GetTokenServiceImpl() { }
 
     public String getToken(String username, String password, String role) {
         if (username == null || password == null) return null;

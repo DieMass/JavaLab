@@ -3,13 +3,17 @@ package die.mass.repositories;
 
 import die.mass.models.Message;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MessageRepositoryJdbcImpl implements MessageRepository {
-    private Connection connection;
+public class MessageRepositoryJdbcImpl extends CrudRepositoryAbstractImpl<Message, Long> implements MessageRepository {
+
+    private ConnectionWrap connectionWrap;
 
     //language=SQL
     private final String SQL_INSERT_MESSAGE = "insert into " +
@@ -18,9 +22,8 @@ public class MessageRepositoryJdbcImpl implements MessageRepository {
     private final String SQL_UPDATE_MESSAGE = "update message set " +
             "(content,name,time) = (?,?,?) where id = ?;";
 
-    public MessageRepositoryJdbcImpl(Connection connection) {
-        this.connection = connection;
-    }
+    public MessageRepositoryJdbcImpl() { }
+
     //позволяет преобразовывать строку из бд в объект
     private RowMapper<die.mass.models.Message> userRowMapper = row -> {
         Long id = row.getLong("id");
@@ -33,7 +36,7 @@ public class MessageRepositoryJdbcImpl implements MessageRepository {
     @Override
     public boolean save(die.mass.models.Message model) {
         try {
-            PreparedStatement statement = connection.prepareStatement(SQL_INSERT_MESSAGE,
+            PreparedStatement statement = connectionWrap.getConnection().prepareStatement(SQL_INSERT_MESSAGE,
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, model.getContent());
             statement.setString(2, model.getName());
@@ -62,7 +65,7 @@ public class MessageRepositoryJdbcImpl implements MessageRepository {
     @Override
     public void update(die.mass.models.Message model) {
         try {
-            PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_MESSAGE,
+            PreparedStatement statement = connectionWrap.getConnection().prepareStatement(SQL_UPDATE_MESSAGE,
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, model.getContent());
             statement.setLong(2,model.getId());
@@ -81,7 +84,7 @@ public class MessageRepositoryJdbcImpl implements MessageRepository {
     @Override
     public void delete(Long id) {
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connectionWrap.getConnection().createStatement();
             statement.execute("delete from account where id = " + id + ";");
             System.out.println("Deleted is comleted");
         } catch (SQLException e) {
@@ -93,7 +96,7 @@ public class MessageRepositoryJdbcImpl implements MessageRepository {
     public Optional<die.mass.models.Message> find(Long id) {
         die.mass.models.Message user = null;
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connectionWrap.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from message where id = " + id + ";");
 
             if (resultSet.next()) {
@@ -110,7 +113,7 @@ public class MessageRepositoryJdbcImpl implements MessageRepository {
     public List<die.mass.models.Message> findAll() {
         List<die.mass.models.Message> result = new ArrayList<>();
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connectionWrap.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from message");
 
             while (resultSet.next()) {
@@ -127,7 +130,7 @@ public class MessageRepositoryJdbcImpl implements MessageRepository {
     public ArrayList<Message> pagination(Integer size, Integer page) {
         ArrayList<Message> data = new ArrayList<>();
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connectionWrap.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from message limit " + size + " offset " + page + ";");
 
             while (resultSet.next()) {

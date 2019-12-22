@@ -4,20 +4,29 @@ import die.mass.models.Message;
 import die.mass.protocol.Payload;
 import die.mass.protocol.Protocol;
 import die.mass.repositories.MessageRepository;
+import die.mass.servers.Component;
 import die.mass.servers.GetTokenServiceImpl;
 
 import java.time.LocalDateTime;
 
-public class MessageService {
+public class MessageService implements Service {
 
     private Protocol protocolIn = new Protocol();
     private Protocol protocolOut = new Protocol();
     private MessageRepository messageRepository;
     private GetTokenServiceImpl getTokenService;
 
-    public MessageService(MessageRepository messageRepository, GetTokenServiceImpl getTokenService) {
-        this.messageRepository = messageRepository;
-        this.getTokenService = getTokenService;
+    public MessageService() { }
+
+    @Override
+    public <Q extends Component> void setField(Q object) {
+        if(MessageRepository.class.isAssignableFrom(object.getClass())) {
+            this.messageRepository = (MessageRepository) object;
+        } else if(GetTokenServiceImpl.class.isAssignableFrom(object.getClass())) {
+            this.getTokenService = (GetTokenServiceImpl) object;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Protocol createOut(LocalDateTime localDateTime, Protocol protocolIn) {

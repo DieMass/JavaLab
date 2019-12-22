@@ -1,92 +1,59 @@
 package die.mass.servers;
 
-import die.mass.protocol.Protocol;
-import die.mass.repositories.*;
-import die.mass.services.*;
+import die.mass.repositories.ConnectionWrap;
+import org.reflections.Reflections;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Properties;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ServerContext {
 
-    private GetTokenServiceImpl getTokenService;
-    private LoginService loginService;
-    private ResponseService responseService;
-    private MessageService messageService;
-    private CommandService commandService;
-    private AdminService adminService;
-    private Connection connection;
-    private UserRepository userRepository;
-    private MessageRepository messageRepository;
-    private GoodRepository goodRepository;
-    private Protocol protocolIn = new Protocol();
-    private Protocol protocolOut = new Protocol();
+    private ConnectionWrap connectionWrap;
+    private Set<Component> childrenObjects;
 
-    public ServerContext(String properties, List<ChatMultiServer.ClientHandler> clients) {
-        this.getTokenService = new GetTokenServiceImpl("qwerty007");
-        this.connection = connect(properties);
-        this.userRepository = new UserRepositoryJdbcImpl(connection);
-        this.messageRepository = new MessageRepositoryJdbcImpl(connection);
-        this.goodRepository = new GoodRepositoryJdbcImpl(connection);
-        this.loginService = new LoginService(userRepository, protocolIn, protocolOut, getTokenService);
-        this.messageService = new MessageService(messageRepository, getTokenService);
-        this.responseService = new ResponseService(clients);
-        this.adminService = new AdminService(getTokenService);
-        this.commandService = new CommandService(messageRepository,goodRepository, adminService);
+    public ServerContext(String properties) {
+        this.connectionWrap = new ConnectionWrap(properties);
+        Reflections reflections = new Reflections();
+
+        Set<Class<? extends Component>> componentChildren = reflections.getSubTypesOf(Component.class);
+        componentChildren.remove(ConnectionWrap.class);
+        componentChildren.forEach(i -> System.out.println("comp = " + i.getName()));
+        System.out.println();
+
+        childrenObjects = componentChildren.stream().filter(i -> !i.isInterface() && !Modifier.isAbstract(i.getModifiers())).map(i -> {
+            try {
+                return i.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new IllegalArgumentException();
+            }
+        }).collect(Collectors.toSet());
+        childrenObjects.add(connectionWrap);
+
+        childrenObjects.forEach(i -> System.out.println("objs = " + i.getClass().getSimpleName()));
+
+        childrenObjects.forEach(i -> {
+            Field[] fields = i.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                childrenObjects.forEach(j -> {
+                    if (field.getType().isAssignableFrom(j.getClass())) {
+                        System.out.println("class " + i.getClass().getSimpleName() + ", field " + field.getType().getSimpleName() + ", set " + j.getClass().getSimpleName());
+                        i.setField(j);
+                    }
+                });
+            }
+        });
     }
 
-    private Connection connect(String propertiesName) {
-        Properties properties = new Properties();
-        try {
-            properties.load(new FileReader(propertiesName));
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
+    public Component getByName(String name) {
+        for (Component component: childrenObjects) {
+            if (component.getName().equals(name)) {
+                return  component;
+            }
         }
-        String username = properties.getProperty("db.username");
-        String password = properties.getProperty("db.password");
-        String url = properties.getProperty("db.url");
-
-        Connection connection;
-
-        try{
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(url,username,password);
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new IllegalStateException(e);
-        }
-        return connection;
-    }
-
-    public LoginService getLoginService() {
-        return loginService;
-    }
-
-    public ResponseService getResponseService() {
-        return responseService;
-    }
-
-    public MessageService getMessageService() {
-        return messageService;
-    }
-
-    public CommandService getCommandService() {
-        return commandService;
-    }
-
-    public Protocol getProtocolIn() {
-        return protocolIn;
-    }
-
-    public Protocol getProtocolOut() {
-        return protocolOut;
-    }
-
-    public GetTokenServiceImpl getGetTokenService() {
-        return getTokenService;
+        throw new IllegalStateException();
     }
 }
+
+

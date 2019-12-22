@@ -2,14 +2,22 @@ package die.mass.repositories;
 
 import die.mass.models.User;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UserRepositoryJdbcImpl implements UserRepository {
+public class UserRepositoryJdbcImpl extends CrudRepositoryAbstractImpl<User, Long> implements UserRepository {
 
-    private Connection connection;
+    private ConnectionWrap connectionWrap;
+
+    @Override
+    public ConnectionWrap getConnectionWrap() {
+        return connectionWrap;
+    }
 
     //language=SQL
     private final String SQL_INSERT_USER = "insert into " +
@@ -18,21 +26,21 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     private final String SQL_UPDATE_USER = "update account set " +
             "(name, password) = (?, ?) where id = ?;";
 
-    public UserRepositoryJdbcImpl(Connection connection) {
-        this.connection = connection;
-    }
+    public UserRepositoryJdbcImpl() { }
+
     //позволяет преобразовывать строку из бд в объект
     private RowMapper<die.mass.models.User> userRowMapper = row -> {
         Long id = row.getLong("id");
         String name = row.getString("name");
         String password = row.getString("password");
-        return new die.mass.models.User(id, name, password);
+        Boolean isAdmin = row.getBoolean("isadmin");
+        return new User(id, name, password, isAdmin);
     };
     //аналог insert в SQL
     @Override
-    public boolean save(die.mass.models.User model) {
+    public boolean save(User model) {
         try {
-            PreparedStatement statement = connection.prepareStatement(SQL_INSERT_USER,
+            PreparedStatement statement = connectionWrap.getConnection().prepareStatement(SQL_INSERT_USER,
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, model.getName());
             statement.setString(2, model.getPassword());
@@ -59,9 +67,9 @@ public class UserRepositoryJdbcImpl implements UserRepository {
 
     //аналог update в SQL
     @Override
-    public void update(die.mass.models.User model) {
+    public void update(User model) {
         try {
-            PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_USER,
+            PreparedStatement statement = connectionWrap.getConnection().prepareStatement(SQL_UPDATE_USER,
                     Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, model.getName());
             statement.setString(2, model.getPassword());
@@ -81,7 +89,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     @Override
     public void delete(Long id) {
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connectionWrap.getConnection().createStatement();
             statement.execute("delete from account where id = " + id + ";");
             System.out.println("Deleted is comleted");
         } catch (SQLException e) {
@@ -93,7 +101,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     public Optional<die.mass.models.User> find(Long id) {
         die.mass.models.User user = null;
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connectionWrap.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from account where id = " + id + ";");
 
             if (resultSet.next()) {
@@ -110,7 +118,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     public List<die.mass.models.User> findAll() {
         List<die.mass.models.User> result = new ArrayList<>();
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connectionWrap.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from account");
 
             while (resultSet.next()) {
@@ -127,7 +135,7 @@ public class UserRepositoryJdbcImpl implements UserRepository {
     public String contains(String name) {
         die.mass.models.User user = null;
         try {
-            Statement statement = connection.createStatement();
+            Statement statement = connectionWrap.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("select * from account where name = '" + name + "';");
 
             if (resultSet.next()) {

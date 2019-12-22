@@ -8,20 +8,17 @@ import die.mass.servers.ChatMultiServer;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
-public class ResponseService {
+public class ResponseService implements Service {
 
-    private List<ChatMultiServer.ClientHandler> clients;
     private ObjectMapper objectMapper;
 
-    public ResponseService(List<ChatMultiServer.ClientHandler> clients) {
-        this.clients = clients;
+    public ResponseService() {
         this.objectMapper = new ObjectMapper();
     }
 
-    public void responseLogout(Protocol protocolIn, Protocol protocolOut, LocalDateTime localDateTime) {
+    public void responseLogout(Protocol protocolIn, Protocol protocolOut, LocalDateTime localDateTime, List<ChatMultiServer.ClientHandler> clients) {
         protocolOut.setHeader("LogOut");
         protocolOut.setPayload(new Payload());
         protocolOut.getPayload().setName(protocolIn.getPayload().getName());
@@ -37,7 +34,7 @@ public class ResponseService {
         }
     }
 
-    public void responseMessage(Protocol protocolOut) {
+    public void responseMessage(Protocol protocolOut, List<ChatMultiServer.ClientHandler> clients) {
         try {
             String answer = objectMapper.writeValueAsString(protocolOut);
             for(ChatMultiServer.ClientHandler clientHandler : clients) {
@@ -48,7 +45,7 @@ public class ResponseService {
         }
     }
 
-    public void answering(Protocol protocolOut, String name) {
+    public void answering(Protocol protocolOut, String name, List<ChatMultiServer.ClientHandler> clients) {
         for(ChatMultiServer.ClientHandler clientHandler : clients) {
             if(clientHandler.getClientName().equals(name)) {
                 try {
