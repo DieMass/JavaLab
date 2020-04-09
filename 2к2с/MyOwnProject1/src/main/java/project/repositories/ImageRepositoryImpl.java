@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import project.models.Image;
+import project.models.user.Image;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -53,8 +53,8 @@ public class ImageRepositoryImpl implements ImageRepository {
     }
 
     @Override
-    public void update(Image model) {
-
+    public int update(Image model) {
+        return 0;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package project.repositories;
 
-import project.models.Image;
+import project.models.user.Image;
 
 import java.util.Optional;
 

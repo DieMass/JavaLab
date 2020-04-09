@@ -7,9 +7,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import project.models.Role;
-import project.models.State;
-import project.models.User;
+import project.models.user.Role;
+import project.models.user.State;
+import project.models.user.User;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -79,7 +79,7 @@ public class UserRepositoryJdbcImpl implements UserRepository, CrudRepository<Us
     }
 
     @Override
-    public void update(User model) {
+    public int update(User model) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(connection -> {
             PreparedStatement statement = connection
@@ -90,6 +90,7 @@ public class UserRepositoryJdbcImpl implements UserRepository, CrudRepository<Us
             return statement;
         }, keyHolder);
         model.setId((Long)keyHolder.getKey());
+        return 1;
     }
 
     //аналог delete в SQL

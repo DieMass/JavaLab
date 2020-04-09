@@ -3,15 +3,13 @@ package project.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import project.dto.UserVerifiedDto;
-import project.models.User;
+import project.models.user.User;
 import project.services.EmailService;
 import project.services.TokenService;
 import project.services.UserService;
@@ -33,10 +31,11 @@ public class SignUpController {
 
     @GetMapping
     public String  doGet(Authentication authentication) {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication());
         return authentication == null ? "signup" : "redirect:/user";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public ModelAndView doPost(@RequestParam("email") String email, @RequestParam("password") String passwordEnc,
                                @RequestParam("name") String name) {
         if(!userService.userExists(name)) {
@@ -46,7 +45,7 @@ public class SignUpController {
                     .name(name).email(email).password(password)
                     .token(token).build());
             emailService.sendMessage(email, UserVerifiedDto.builder().name(name).token(token).build());
-            return new ModelAndView("/signin");
+            return new ModelAndView("redirect:/signin");
         }
         ModelAndView mv = new ModelAndView("/signup");
         mv.addObject("error", "user " + name + " already exists");

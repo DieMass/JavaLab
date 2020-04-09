@@ -1,0 +1,43 @@
+POST http://localhost:8082/api/signin
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{
+  "email": "diemass1908@gmail.com",
+  "password": "qwerty008"
+}
+
+###
+
+POST http://localhost:8082/api/cpus
+Accept: */*
+Cache-Control: no-cache
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwibmFtZSI6IkRpZU1hc3MiLCJyb2xlIjoiQURNSU4ifQ.OclLlv41fl7qzkKiPgbuU7Ffwb5Et4V92Ed-GPnSDO4
+Content-Type: application/json
+
+{
+  "series": "X007",
+  "company": "Amd",
+  "line": "AM43",
+  "socket": "LGA228",
+  "cores": "128",
+  "lithography": "5"
+}
+
+###
+
+GET http://localhost:8082/api/cpus
+Accept: */*
+Cache-Control: no-cache
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwibmFtZSI6IkRpZU1hc3MiLCJyb2xlIjoiQURNSU4ifQ.OclLlv41fl7qzkKiPgbuU7Ffwb5Et4V92Ed-GPnSDO4
+
+
+###
+
+DELETE http://localhost:8082/api/cpus/delete/94
+Accept: */*
+Cache-Control: no-cache
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwibmFtZSI6IkRpZU1hc3MiLCJyb2xlIjoiQURNSU4ifQ.OclLlv41fl7qzkKiPgbuU7Ffwb5Et4V92Ed-GPnSDO4
+
+###

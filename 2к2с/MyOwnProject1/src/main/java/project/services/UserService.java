@@ -1,6 +1,6 @@
 package project.services;
 
-import project.models.User;
+import project.models.user.User;
 
 import java.util.List;
 import java.util.Optional;

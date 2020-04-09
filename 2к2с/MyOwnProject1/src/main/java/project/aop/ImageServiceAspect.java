@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import project.models.User;
 import project.security.details.UserDetailsImpl;
 import project.services.EmailService;
 
@@ -27,9 +26,8 @@ public class ImageServiceAspect {
     @AfterReturning(pointcut = "store() && args(multipartFile, authentication)", returning = "name")
     public void afterReturningAdvice(String name, MultipartFile multipartFile, Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        User user = userDetails.getUser();
         System.out.println("before sending");
-        emailService.sendImage(user.getEmail(), name);
+        emailService.sendImage(userDetails.getUser().getEmail(), name);
         System.out.println("after sending");
         System.out.println("В аспекте я поймал " + name);
     }

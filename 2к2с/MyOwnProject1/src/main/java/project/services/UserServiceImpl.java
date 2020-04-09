@@ -1,6 +1,6 @@
 package project.services;
 
-import project.models.User;
+import project.models.user.User;
 import project.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

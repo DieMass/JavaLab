@@ -1,10 +1,11 @@
 package project.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import project.models.Image;
+import project.models.user.Image;
 import project.repositories.ImageRepository;
 
 import java.io.File;
@@ -20,6 +21,7 @@ public class StorageServiceImpl implements StorageService {
     private final String path = "/mnt/3E66C61266C5CB3B/Projects/Java/Education/JavaLab/2к2с/DataSet/";
 
     @Autowired
+    @Qualifier("imageRepositoryJpaImpl")
     private ImageRepository imageRepository;
     private Random random = new Random();
 

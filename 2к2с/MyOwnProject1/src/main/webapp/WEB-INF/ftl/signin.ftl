@@ -6,6 +6,17 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script>
+        function signin() {
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            const toSend = {email: email, password: password};
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("post","/signin");
+            xmlHttp.setRequestHeader("Content-type", "application/json");
+            xmlHttp.send(JSON.stringify(toSend));
+        }
+    </script>
 </head>
 <body>
 <main class="page contact-page" style="margin-top: 50px;">
@@ -17,7 +28,6 @@
                     <h3 style="color: red">${RequestParameters.error}</h3>
                 </#if>
             </div>
-<#--            ${_csrf}-->
             <form method="post">
                 <div class="form-group"><label for="email">Email</label><input class="form-control item" type="text"
                                                                                 id="email" name="email"
@@ -29,6 +39,7 @@
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
                 <div class="form-group">
                     <button class="btn btn-primary btn-block btn-lg" type="submit"
+<#--                            onclick="signin()"-->
                             style="background-color: rgb(140,90,64);border-color: rgb(140,90,64);">Войти
                     </button>
                 </div>

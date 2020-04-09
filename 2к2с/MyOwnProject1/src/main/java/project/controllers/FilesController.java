@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@PreAuthorize("isAuthenticated()")
 public class FilesController {
 
     @Autowired
@@ -29,6 +28,7 @@ public class FilesController {
 
 
     @PostMapping(value = "/storage")
+    @PreAuthorize("isAuthenticated()")
     public ModelAndView uploadFile(@RequestParam("file") MultipartFile multipartFile, Authentication authentication) {
         String name = storageService.store(multipartFile, authentication);
         ModelAndView mv = new ModelAndView("redirect:/files/" + name);
@@ -48,10 +48,27 @@ public class FilesController {
     }
 
     @GetMapping(value = "/storage")
-    public ModelAndView getStoragePage() {
-        ModelAndView mv = new ModelAndView("file_upload");
-        List<String> images = storageService.getAllImages();
-        mv.addObject("images", images);
-        return mv;
+    @PreAuthorize("permitAll()")
+    public ModelAndView getStoragePage(Authentication authentication) {
+        if(authentication != null) {
+            ModelAndView mv = new ModelAndView("file_upload");
+            List<String> images = storageService.getAllImages();
+            mv.addObject("images", images);
+            return mv;
+        }
+        return new ModelAndView("redirect:/signin");
     }
+
+//    @GetMapping(value = "/storage")
+//    @PreAuthorize("permitAll()")
+//    public ModelAndView getStoragePage() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if(!authentication.getAuthorities().contains("ROLE_ANONYMOUS")) {
+//            ModelAndView mv = new ModelAndView("file_upload");
+//            List<String> images = storageService.getAllImages();
+//            mv.addObject("images", images);
+//            return mv;
+//        }
+//        return new ModelAndView("redirect:/signin");
+//    }
 }

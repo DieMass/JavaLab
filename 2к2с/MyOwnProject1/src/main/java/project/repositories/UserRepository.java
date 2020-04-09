@@ -1,6 +1,6 @@
 package project.repositories;
 
-import project.models.User;
+import project.models.user.User;
 
 import java.util.Optional;
 
