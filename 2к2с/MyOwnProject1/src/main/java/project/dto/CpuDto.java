@@ -1,7 +1,7 @@
 package project.dto;
 
 import lombok.*;
-import project.models.cpu.Cpu;
+import project.models.devices.cpu.Cpu;
 
 import java.util.List;
 import java.util.stream.Collectors;

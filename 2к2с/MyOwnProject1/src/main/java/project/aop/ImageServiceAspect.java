@@ -8,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import project.security.details.UserDetailsImpl;
-import project.services.EmailService;
+import project.services.users.email.EmailService;
 
 
 @Aspect
@@ -18,7 +18,7 @@ public class ImageServiceAspect {
     @Autowired
     private EmailService emailService;
 
-    @Pointcut("execution(* project.services.StorageServiceImpl.store(..))")
+    @Pointcut("execution(* project.services.users.StorageServiceImpl.store(..))")
     private String store(){
         return null;
     }

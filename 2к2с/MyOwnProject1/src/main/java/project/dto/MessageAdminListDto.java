@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import project.models.devices.cpu.Cpu;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseCpuDto {
+public class MessageAdminListDto {
 
-	private Cpu data;
+	private Long id;
+	private String name;
+	private String text;
+
 }

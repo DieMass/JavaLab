@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import project.models.user.User;
-import project.repositories.UserRepository;
+import project.repositories.users.UserRepository;
 
 import java.util.Optional;
 
