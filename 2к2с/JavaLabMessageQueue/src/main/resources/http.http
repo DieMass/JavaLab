@@ -1,0 +1,10 @@
+POST localhost:8082/queue
+Accept: */*
+Cache-Control: no-cache
+Content-Type: application/json
+
+{
+  "queueName": "asdasd"
+}
+
+###
