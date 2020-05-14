@@ -4,8 +4,8 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.dto.MessageAdminListDto;
-import project.dto.MessageDto;
+import project.dto.user.MessageAdminListDto;
+import project.dto.user.MessageDto;
 import project.services.users.MessageService;
 
 import java.util.List;

@@ -1,7 +1,6 @@
 package project.models.devices.motherboard;
 
 import lombok.*;
-import project.models.MotherBoard;
 import project.models.devices.cpu.Cpu;
 
 import javax.persistence.*;

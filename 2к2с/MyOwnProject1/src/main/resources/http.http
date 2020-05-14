@@ -41,3 +41,17 @@ Cache-Control: no-cache
 Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwibmFtZSI6IkRpZU1hc3MiLCJyb2xlIjoiQURNSU4ifQ.OclLlv41fl7qzkKiPgbuU7Ffwb5Et4V92Ed-GPnSDO4
 
 ###
+
+POST http://localhost:8082/api/setups
+Accept: */*
+Cache-Control: no-cache
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwibmFtZSI6IkRpZU1hc3MiLCJyb2xlIjoiQURNSU4ifQ.OclLlv41fl7qzkKiPgbuU7Ffwb5Et4V92Ed-GPnSDO4
+Content-Type: application/json
+
+{
+  "account": 1,
+  "cpu": "25",
+  "mobo": "17"
+}
+
+###

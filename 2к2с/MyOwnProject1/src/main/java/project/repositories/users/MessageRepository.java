@@ -1,6 +1,6 @@
 package project.repositories.users;
 
-import project.dto.MessageAdminListDto;
+import project.dto.user.MessageAdminListDto;
 import project.models.user.Message;
 import project.repositories.general.CrudRepository;
 

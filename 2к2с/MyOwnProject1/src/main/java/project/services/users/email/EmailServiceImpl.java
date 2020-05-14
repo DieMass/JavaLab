@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import project.dto.UserVerifiedDto;
+import project.dto.user.UserVerifiedDto;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;

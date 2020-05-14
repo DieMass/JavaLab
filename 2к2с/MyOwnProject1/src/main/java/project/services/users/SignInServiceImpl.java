@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import project.dto.SignInDto;
-import project.dto.TokenDto;
+import project.dto.user.SignInDto;
+import project.dto.user.TokenDto;
 import project.models.user.User;
 import project.repositories.users.UserRepository;
 

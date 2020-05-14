@@ -1,7 +1,7 @@
 package project.services.users;
 
-import project.dto.SignInDto;
-import project.dto.TokenDto;
+import project.dto.user.SignInDto;
+import project.dto.user.TokenDto;
 
 public interface SignInService {
 

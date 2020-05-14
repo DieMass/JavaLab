@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import project.dto.CpuDto;
-import project.dto.ResponseCpuDto;
-import project.dto.ResponseCpusDto;
+import project.dto.devices.CpuDto;
+import project.dto.devices.ResponseCpuDto;
+import project.dto.devices.ResponseCpusDto;
 import project.models.devices.cpu.Cpu;
 import project.services.devices.CpuService;
 
@@ -25,6 +25,12 @@ public class CpuRestController {
 								 @RequestParam(value = "sort", defaultValue = "id") String sort) {
 		System.out.println(SecurityContextHolder.getContext().getAuthentication());
 		return ResponseCpusDto.builder().data(CpuDto.from(cpuService.getAll(size, page, sort))).build();
+	}
+
+	@GetMapping("/bysocket")
+	@PreAuthorize("permitAll()")
+	public ResponseCpusDto getBySocket(@RequestParam(value = "socketName", defaultValue = "") String socketName) {
+		return ResponseCpusDto.builder().data(CpuDto.from(cpuService.getBySocketName(socketName))).build();
 	}
 
 	@PostMapping

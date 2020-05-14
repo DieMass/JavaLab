@@ -2,6 +2,8 @@ package project.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -15,11 +17,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
+@ComponentScan("project")
 public class SecurityConfig {
 
 	@Configuration
@@ -42,7 +50,6 @@ public class SecurityConfig {
 		protected void configure(HttpSecurity http) throws Exception {
 			http.csrf().disable();
 			http.formLogin().disable();
-			http.logout().disable();
 			http.antMatcher("/api/**");
 			http.httpBasic().disable();
 			http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -54,6 +61,7 @@ public class SecurityConfig {
 		protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 			auth.authenticationProvider(authenticationProvider);
 		}
+
 	}
 
 	@Configuration
@@ -75,13 +83,13 @@ public class SecurityConfig {
 
 		@Autowired
 		public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(userDetailsService)
-					.passwordEncoder(passwordEncoder);
+			auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 		}
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests();
+			http.authorizeRequests().and()
+					.rememberMe().rememberMeParameter("remember-me").tokenRepository(persistentTokenRepository());
 			http.antMatcher("/**");
 			http.formLogin()
 					.loginPage("/signin")
@@ -89,6 +97,21 @@ public class SecurityConfig {
 					.defaultSuccessUrl("/user")
 					.failureUrl("/signin?error=Incorrect email or password")
 					.permitAll();
+			http.addFilter(new AnonymousAuthenticationFilter("anonymous"));
+			http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					.logoutSuccessUrl("/signin")
+					.deleteCookies("SESSION", "remember-me")
+					.invalidateHttpSession(true);
+		}
+
+		@Autowired
+		private DataSource dataSource;
+
+		@Bean
+		public PersistentTokenRepository persistentTokenRepository() {
+			JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+			jdbcTokenRepository.setDataSource(dataSource);
+			return jdbcTokenRepository;
 		}
 	}
 }

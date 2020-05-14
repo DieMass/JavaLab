@@ -3,7 +3,7 @@ package project.controllers.rest;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import project.dto.MessageDto;
+import project.dto.user.MessageDto;
 import project.models.user.Message;
 import project.services.users.MessageService;
 

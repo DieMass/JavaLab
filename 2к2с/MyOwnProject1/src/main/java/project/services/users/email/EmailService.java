@@ -1,6 +1,6 @@
 package project.services.users.email;
 
-import project.dto.UserVerifiedDto;
+import project.dto.user.UserVerifiedDto;
 
 public interface EmailService {
 

@@ -3,7 +3,7 @@ package project.models.devices.adapters;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import project.models.devices.cpu.Cpu;
-import project.models.MotherBoard;
+import project.models.devices.motherboard.MotherBoard;
 
 import javax.persistence.*;
 import java.util.List;

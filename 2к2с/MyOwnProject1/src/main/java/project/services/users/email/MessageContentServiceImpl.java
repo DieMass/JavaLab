@@ -5,7 +5,7 @@ import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import project.dto.UserVerifiedDto;
+import project.dto.user.UserVerifiedDto;
 
 import javax.mail.internet.MimeMessage;
 import java.util.HashMap;

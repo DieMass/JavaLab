@@ -2,7 +2,7 @@ package project.repositories.users;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import project.dto.MessageAdminListDto;
+import project.dto.user.MessageAdminListDto;
 import project.models.user.Message;
 
 import javax.persistence.EntityManager;
@@ -26,16 +26,6 @@ public class MessageRepositoryImpl implements MessageRepository {
 	}
 
 	@Override
-	public int update(Message model) {
-		return 0;
-	}
-
-	@Override
-	public void delete(Long aLong) {
-
-	}
-
-	@Override
 	public Optional<Message> find(Long aLong) {
 		return Optional.of(entityManager.find(Message.class, aLong));
 	}
@@ -43,6 +33,16 @@ public class MessageRepositoryImpl implements MessageRepository {
 	@Override
 	public List<Message> findAll() {
 		return entityManager.createQuery("select m from Message m", Message.class).getResultList();
+	}
+
+	@Override
+	public int update(Message model) {
+		return 0;
+	}
+
+	@Override
+	public void delete(Long aLong) {
+
 	}
 
 	@Override

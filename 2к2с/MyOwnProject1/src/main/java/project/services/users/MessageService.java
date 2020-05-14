@@ -1,7 +1,7 @@
 package project.services.users;
 
-import project.dto.MessageAdminListDto;
-import project.dto.MessageDto;
+import project.dto.user.MessageAdminListDto;
+import project.dto.user.MessageDto;
 import project.models.user.Message;
 
 import java.util.List;

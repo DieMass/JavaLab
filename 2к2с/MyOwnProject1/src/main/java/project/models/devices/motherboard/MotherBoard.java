@@ -1,4 +1,4 @@
-package project.models;
+package project.models.devices.motherboard;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import project.models.devices.adapters.PCIe;
 import project.models.devices.adapters.Socket;
 import project.models.devices.general.Company;
-import project.models.devices.motherboard.Chipset;
-import project.models.devices.motherboard.FormFactor;
 
 import javax.persistence.*;
 
@@ -22,6 +20,7 @@ public class MotherBoard {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private String name;
 	@ManyToOne
 	private Company company;
 	@ManyToOne

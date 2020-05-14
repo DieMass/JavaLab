@@ -89,4 +89,10 @@ public class CpuRepositoryImpl implements CpuRepository {
 		query.setMaxResults(size);
 		return query.getResultList();
 	}
+
+	@Override
+	public List<Cpu> findBySocket(String socketName) {
+		return entityManager.createQuery("select m from Cpu m where m.socket.name = :socketName", Cpu.class)
+				.setParameter("socketName", socketName).getResultList();
+	}
 }

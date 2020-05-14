@@ -1,7 +1,6 @@
 package project.models.devices.motherboard;
 
 import lombok.*;
-import project.models.MotherBoard;
 
 import javax.persistence.*;
 import java.util.List;

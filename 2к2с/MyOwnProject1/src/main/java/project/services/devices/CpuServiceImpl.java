@@ -2,7 +2,7 @@ package project.services.devices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import project.dto.CpuDto;
+import project.dto.devices.CpuDto;
 import project.models.devices.adapters.Socket;
 import project.models.devices.cpu.Cpu;
 import project.models.devices.cpu.Family;
@@ -33,7 +33,12 @@ public class CpuServiceImpl implements CpuService {
 	}
 
 	@Override
-	public Cpu 	saveCpu(CpuDto cpuDto) {
+	public List<Cpu> getBySocketName(String socketName) {
+		return socketName.equals("") ? cpuRepository.findAll() : cpuRepository.findBySocket(socketName);
+	}
+
+	@Override
+	public Cpu saveCpu(CpuDto cpuDto) {
 		Cpu cpu = createFromCpuDto(cpuDto, null);
 		cpuRepository.save(cpu);
 		return cpu;
@@ -78,6 +83,11 @@ public class CpuServiceImpl implements CpuService {
 	@Override
 	public void delete(Long id) {
 		cpuRepository.delete(id);
+	}
+
+	@Override
+	public Cpu find(Long id) {
+		return cpuRepository.find(id).orElse(null);
 	}
 
 	private <T> T getFromOptional(Optional<T> candidate, T modelElse) {

@@ -27,7 +27,6 @@
         }
 
         function sendMessage(userId, text, role) {
-
             let body = {
                 sender: userId,
                 receiver: '1',

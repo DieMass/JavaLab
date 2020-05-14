@@ -2,8 +2,8 @@ package project.services.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import project.dto.MessageAdminListDto;
-import project.dto.MessageDto;
+import project.dto.user.MessageAdminListDto;
+import project.dto.user.MessageDto;
 import project.models.user.Message;
 import project.repositories.users.MessageRepository;
 

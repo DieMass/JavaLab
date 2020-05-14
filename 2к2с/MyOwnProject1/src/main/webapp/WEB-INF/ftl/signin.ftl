@@ -1,4 +1,5 @@
 <!doctype html>
+<#import "spring.ftl" as spring />
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -37,6 +38,9 @@
                                                                                    name="password"
                                                                                    placeholder="Введите пароль"></div>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+                <label>
+                    <input type="checkbox" name="remember-me">Запомни меня
+                </label>
                 <div class="form-group">
                     <button class="btn btn-primary btn-block btn-lg" type="submit"
 <#--                            onclick="signin()"-->
@@ -47,5 +51,7 @@
         </div>
     </section>
 </main>
+<h1><@spring.message 'profile.page.welcome'/></h1>
+<h1><@spring.message 'profile.page.good.work'/></h1>
 </body>
 </html>
