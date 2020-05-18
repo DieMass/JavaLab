@@ -23,41 +23,42 @@ import java.util.Optional;
 @Controller
 public class FilesController {
 
-    @Autowired
-    private StorageService storageService;
+	@Autowired
+	private StorageService storageService;
 
+	@PostMapping(value = "/storage")
+	@PreAuthorize("permitAll()")
+	public ModelAndView uploadFile(@RequestParam("file") MultipartFile multipartFile, Authentication authentication) {
+		System.out.println("FC.uF()");
+		String name = storageService.store(multipartFile, authentication);
+		ModelAndView mv = new ModelAndView("redirect:/files/" + name);
+		return mv;
+	}
+	// localhost:8080/files/123809183093qsdas09df8af.jpeg
 
-    @PostMapping(value = "/storage")
-    @PreAuthorize("isAuthenticated()")
-    public ModelAndView uploadFile(@RequestParam("file") MultipartFile multipartFile, Authentication authentication) {
-        String name = storageService.store(multipartFile, authentication);
-        ModelAndView mv = new ModelAndView("redirect:/files/" + name);
-        return mv;
-    }
-    // localhost:8080/files/123809183093qsdas09df8af.jpeg
+	@GetMapping(value = "/files/{file-name:.+}")
+	@PreAuthorize("permitAll()")
+	public ResponseEntity<Resource> getFile(@PathVariable("file-name") String fileName) {
+		System.out.println("FC.gF() file-name:" + fileName);
+		Optional<File> fileCandidate = storageService.load(fileName);
+		if (fileCandidate.isPresent()) {
+			Resource fileSystemResource = new FileSystemResource(fileCandidate.get());
+			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(fileSystemResource);
+		}
+		return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new FileSystemResource(storageService.get404()));
+	}
 
-    @GetMapping(value ="/files/{file-name:.+}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Resource> getFile(@PathVariable("file-name") String fileName) {
-        Optional<File> fileCandidate = storageService.load(fileName);
-        if(fileCandidate.isPresent()) {
-            Resource fileSystemResource = new FileSystemResource(fileCandidate.get());
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(fileSystemResource);
-        }
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(new FileSystemResource(storageService.get404()));
-    }
-
-    @GetMapping(value = "/storage")
-    @PreAuthorize("permitAll()")
-    public ModelAndView getStoragePage(Authentication authentication) {
-        if(authentication != null) {
-            ModelAndView mv = new ModelAndView("file_upload");
-            List<String> images = storageService.getAllImages();
-            mv.addObject("images", images);
-            return mv;
-        }
-        return new ModelAndView("redirect:/signin");
-    }
+	@GetMapping(value = "/storage")
+	@PreAuthorize("permitAll()")
+	public ModelAndView getStoragePage(Authentication authentication) {
+		if (authentication != null) {
+			ModelAndView mv = new ModelAndView("file_upload");
+			List<String> images = storageService.getAllImages();
+			mv.addObject("images", images);
+			return mv;
+		}
+		return new ModelAndView("redirect:/signin");
+	}
 
 //    @GetMapping(value = "/storage")
 //    @PreAuthorize("permitAll()")

@@ -18,10 +18,12 @@ import java.util.stream.Collectors;
 @Component
 public class StorageServiceImpl implements StorageService {
 
-    private final String path = "/mnt/3E66C61266C5CB3B/Projects/Java/Education/JavaLab/2к2с/DataSet/";
+    private final String path = System.getProperty("os.name").toLowerCase().startsWith("win") ?
+            "D:\\Projects\\Java\\Education\\JavaLab\\2к2с\\DataSet\\" :
+            "/mnt/3E66C61266C5CB3B/Projects/Java/Education/JavaLab/2к2с/DataSet/";
 
     @Autowired
-    @Qualifier("imageRepositoryJpaImpl")
+    @Qualifier("imageRepositoryImpl")
     private ImageRepository imageRepository;
     private Random random = new Random();
 
@@ -33,7 +35,7 @@ public class StorageServiceImpl implements StorageService {
                 name = "" + random.nextInt() + multipartFile.hashCode() + random.nextInt() + multipartFile.getOriginalFilename();
             } while (imageRepository.findByName(name).isPresent());
             multipartFile.transferTo(new File(path + name));
-            imageRepository.save(Image.builder().name(name).build());
+            imageRepository.save(Image.builder().name(name).path(path).build());
             return name;
         } catch (IOException e) {
             throw new IllegalArgumentException(e);

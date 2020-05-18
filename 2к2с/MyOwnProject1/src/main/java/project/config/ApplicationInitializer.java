@@ -7,10 +7,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import project.security.config.SecurityConfig;
 
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
+import javax.servlet.*;
 
 public class ApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
@@ -38,6 +35,13 @@ public class ApplicationInitializer extends AbstractAnnotationConfigDispatcherSe
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
         dispatcher.setInitParameter("contextClass", appContext.getClass().getName());
+
+        MultipartConfigElement multipartConfigElement = new
+                MultipartConfigElement(System.getProperty("os.name").toLowerCase().startsWith("win") ?
+                "D:\\Projects\\Java\\Education\\JavaLab\\2к2с\\DataSet\\" :
+                "/mnt/3E66C61266C5CB3B/Projects/Java/Education/JavaLab/2к2с/DataSet/",
+                20848820, 418018841, 1048576);
+        dispatcher.setMultipartConfig(multipartConfigElement);
 
         servletContext.addListener(new ContextLoaderListener(appContext));
 

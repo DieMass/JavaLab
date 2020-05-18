@@ -38,6 +38,5 @@ public class MotherBoardRepositoryImpl extends RepositoryImpl<MotherBoard, Long>
 	@Override
 	public List<MotherBoard> findAll() {
 		return entityManager.createQuery(String.format(SELECT_ALL, table), MotherBoard.class).getResultList();
-//		return entityManager.createQuery("select m from MotherBoard m", MotherBoard.class).getResultList();
 	}
 }

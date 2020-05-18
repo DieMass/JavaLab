@@ -7,10 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import project.dto.user.SignUpForm;
 import project.models.user.User;
 import project.security.details.UserDetailsImpl;
 import project.services.devices.SetupService;
+import project.services.users.TokenService;
 import project.services.users.UserService;
 
 @Controller
@@ -22,14 +22,17 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private SetupService setupService;
+	@Autowired
+	private TokenService tokenService;
 
 	@GetMapping
 	public ModelAndView doGet(Authentication authentication) {
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		User user = userDetails.getUser();
 		ModelAndView m = new ModelAndView("/user");
+		m.addObject("token", tokenService.getЕбучийToken(user));
 		m.addObject("user", user);
-		m.addObject("profileForm", new SignUpForm());
+		m.addObject("setups", setupService.getAllSetupsForUser(user.getId()));
 		return m;
 	}
 

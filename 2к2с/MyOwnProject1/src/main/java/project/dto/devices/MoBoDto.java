@@ -21,7 +21,7 @@ public class MoBoDto {
 	private String socket;
 	private String chipset;
 	private String formFactor;
-	private String pcie;
+	private String pci;
 
 	public static MoBoDto from(MotherBoard motherBoard) {
 		return MoBoDto.builder()
@@ -31,7 +31,7 @@ public class MoBoDto {
 				.socket(motherBoard.getSocket().getName())
 				.chipset(motherBoard.getChipset().getName())
 				.formFactor(motherBoard.getFormFactor().getName())
-//				.pcie(motherBoard.getPcie().getName())
+				.pci(motherBoard.getPcie().getName())
 				.build();
 	}
 

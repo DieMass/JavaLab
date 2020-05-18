@@ -2,6 +2,7 @@ package project.services.devices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import project.dto.devices.SetupStringDto;
 import project.models.user.Setup;
 import project.repositories.devices.SetupRepository;
 
@@ -15,7 +16,7 @@ public class SetupServiceImpl implements SetupService {
 
 	@Override
 	public List<Setup> getAllSetupsForUser(Long userId) {
-		return setupRepository.getAllByAccount(userId);
+		return setupRepository.findAllByAccount(userId);
 	}
 
 	@Override
@@ -25,8 +26,16 @@ public class SetupServiceImpl implements SetupService {
 
 	@Override
 	public boolean find(Setup setup) {
-		return setupRepository.find(setup.getId()).isPresent();
+		return setupRepository.findById(setup.getId()).isPresent();
 	}
 
+	@Override
+	public void deleteAll(Long userId) {
+		setupRepository.deleteByAccount(userId);
+	}
 
+	@Override
+	public List<SetupStringDto> getStringSetupDtos(Long userId) {
+		return setupRepository.getStringSetupDtos(userId);
+	}
 }

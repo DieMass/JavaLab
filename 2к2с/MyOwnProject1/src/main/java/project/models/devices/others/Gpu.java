@@ -19,9 +19,17 @@ public class Gpu {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne(fetch = FetchType.LAZY)
+	private String name;
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	private Company company;
 	@ManyToOne
 	private PCIe pcie;
+	private Integer memorySize;
+	private Integer baseClock;
+	private Integer tdp;
+	private String memoryType;
+	private String memoryInterface;
+
 
 }
+

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseCpuDto {
+public class ResponseMoBoDto {
 
-	private CpuDto data;
+	private MoBoDto data;
 }

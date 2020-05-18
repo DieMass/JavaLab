@@ -17,7 +17,7 @@ public class CpuRestController {
 	@Autowired
 	private CpuService cpuService;
 
-	@GetMapping
+	@GetMapping("/list")
 //	@PreAuthorize("hasAuthority('ADMIN')")
 	@PreAuthorize("permitAll()")
 	public ResponseCpusDto doGet(@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -27,10 +27,17 @@ public class CpuRestController {
 		return ResponseCpusDto.builder().data(CpuDto.from(cpuService.getAll(size, page, sort))).build();
 	}
 
-	@GetMapping("/bysocket")
+	@GetMapping
 	@PreAuthorize("permitAll()")
-	public ResponseCpusDto getBySocket(@RequestParam(value = "socketName", defaultValue = "") String socketName) {
+	public ResponseCpusDto getByField(@RequestParam(value = "socketName", defaultValue = "") String socketName) {
 		return ResponseCpusDto.builder().data(CpuDto.from(cpuService.getBySocketName(socketName))).build();
+	}
+
+	@GetMapping("/byId")
+	@PreAuthorize("permitAll()")
+	public ResponseCpuDto getById(@RequestParam(value = "id", defaultValue = "1") Long id) {
+		return ResponseCpuDto.builder().data(CpuDto.from(cpuService.find(id))).build();
+
 	}
 
 	@PostMapping
@@ -38,7 +45,7 @@ public class CpuRestController {
 	public ResponseCpuDto doPost(@RequestBody CpuDto cpuDto) {
 		Cpu cpu = cpuService.saveCpu(cpuDto);
 		return ResponseCpuDto.builder()
-				.data(cpu)
+				.data(CpuDto.from(cpu))
 				.build();
 	}
 
@@ -51,6 +58,6 @@ public class CpuRestController {
 	@PutMapping("/update/{cpu-id}")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseCpuDto doPut(@PathVariable(name = "cpu-id") Long id, @RequestBody CpuDto cpuDto) {
-		return ResponseCpuDto.builder().data(cpuService.update(cpuDto, id)).build();
+		return ResponseCpuDto.builder().data(CpuDto.from(cpuService.update(cpuDto, id))).build();
 	}
 }

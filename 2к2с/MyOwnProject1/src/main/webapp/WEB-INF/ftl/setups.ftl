@@ -1,130 +1,74 @@
 <!DOCTYPE html>
+<#import "spring.ftl" as spring />
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>${user.name}'s Homepage</title>
+    <#--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"-->
+    <#--          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">-->
+    <link rel="stylesheet" href="<@spring.url '/css/setups.css'/>">
+    <script src="<@spring.url '/js/setups.js'/>"/>
     <script
             src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
-    <script>
-        function first() {
-            $.ajax({
-                url: "/api/cpus/bysocket?socketName=" + socketName,
-                method: "GET",
-                contentType: "application/json",
-                dataType: "json",
-                success: function (response) {
-                    var cpu = document.getElementById("cpu");
-                    cpu.innerHTML = "";
-                    $('#cpu').first().append('<option value="">' + 'Выберите CPU' + '</option>');
-                    $.each(response.data, function () {
-                        $('#cpu').first().append('<option value="' + this.socket + '">' + this.family + ' ' + this.line + ' ' + this.series + '</option>');
-                    });
-                }
-            });
-        }
-
-        function getCpus(socketName) {
-            $.ajax({
-                url: "/api/cpus/bysocket?socketName=" + socketName,
-                method: "GET",
-                contentType: "application/json",
-                dataType: "json",
-                success: function (response) {
-                    var cpu = document.getElementById("cpu");
-                    // var value = cpu.options[cpu.selectedIndex].value;
-                    cpu.innerHTML = "";
-                    $('#cpu').first().append('<option value="">' + 'Выберите это, чтобы получить все CPU' + '</option>');
-                    $.each(response.data, function () {
-                        $('#cpu').first().append('<option id="' + this.id + '" value="' + this.socket + '">' + this.family + ' ' + this.line + ' ' + this.series + '</option>');
-                    });
-                    $('#cpu').first().append('<option hidden value="' + socketName + '">' + 'currentSocket' + '</option>');
-                }
-            });
-        }
-
-        function getMoBos(socketName) {
-            $.ajax({
-                url: "/api/mobos/bysocket?socketName=" + socketName,
-                method: "GET",
-                contentType: "application/json",
-                dataType: "json",
-                success: function (response) {
-                    var mobo = document.getElementById("mobo");
-                    // var value = mobo.options[mobo.selectedIndex].value;
-                    mobo.innerHTML = "";
-                    $('#mobo').first().append('<option value=""' + '>' + 'Выберите это, чтобы получить все MoBo' + '</option>');
-                    $.each(response.data, function () {
-                        $('#mobo').first().append('<option id="' + this.id + '" value="' + this.socket + '">' + this.name + '</option>');
-                    });
-                    $('#mobo').first().append('<option hidden value="' + socketName + '">' + 'currentSocket' + '</option>');
-                }
-            });
-        }
-
-        function getSocket(socketName, field) {
-            var currentSocket;
-            if(socketName === "") {
-                getCpus(socketName);
-                getMoBos(socketName);
-            } else if (field === 'cpu') {
-                currentSocket = $('#mobo option:contains("currentSocket")').val();
-                if (currentSocket !== socketName) {
-                    // alert(currentSocket + ' !== ' + socketName + ' from cpu');
-                    getMoBos(socketName);
-                }
-            } else {
-                currentSocket = $('#cpu option:contains("currentSocket")').val();
-                if (currentSocket !== socketName) {
-                    // alert(currentSocket + ' !== ' + socketName + ' from mobo');
-                    getCpus(socketName);
-                }
-            }
-        }
-
-        function send(userId) {
-            let body = {
-                account: userId,
-                cpu: $('#cpu option:selected').attr('id'),
-                mobo: $('#mobo option:selected').attr('id')
-            };
-            $.ajax({
-                url: "/api/setups",
-                method: "POST",
-                data: JSON.stringify(body),
-                contentType: "application/json",
-                dataType: "json",
-                complete: function (response) {
-                    // location.reload();
-                }
-            });
-        }
-
-    </script>
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
 </head>
-<body onload="getCpus(''); getMoBos('')">
-<div>
-    <select title="Cpus" id="cpu" onchange="getSocket(value, 'cpu');"></select>
-    <select title="MoBo" id="mobo" onchange="getSocket(value, 'mobo');"></select>
-    <button onclick="send(${user.id})">Отправить
-    </button>
+<body onload="getCpus(''); getMoBos('', ''); getGpus('');" style="font-family: 'Montserrat', sans-serif;">
+<#include "parts/header.ftl">
+<div style="text-align: center">
+    <span class="custom-dropdown big">
+        <select title="Cpus" id="cpu" onchange="getAdapter(value, '', 'cpu'); setCpu();"></select>
+    </span>
+    <span class="custom-dropdown big">
+            <select title="MoBo" id="mobo"
+                    onchange="getAdapter(value.split(';')[0], value.split(';')[1], 'mobo'); setMoBo();"></select>
+    </span>
+    <span class="custom-dropdown big">
+            <select title="Gpus" id="gpu" onchange="getAdapter('', value, 'gpu'); setGpu();"></select>
+    </span>
+    <button onclick="send(${user.id})">Отправить</button>
 </div>
-<div>
-    <table>
-        <thead>
-        <td>Cpu</td>
-        <td>MoBo</td>
-        </thead>
-        <tbody>
-        <#list setups as setup>
-            <tr>
-                <td>${setup.cpu.family.name} ${setup.cpu.line.name} ${setup.cpu.series}</td>
-                <td>${setup.motherBoard.name}</td>
-            </tr>
-        </#list>
-        </tbody>
-    </table>
+<div class="container">
+    <div class="col align-self-center">
+        <div class="cont">
+            <div class="column">
+                <table class="table table-bordered table-side-by-side">
+                    <thead>Cpu</thead>
+                    <tbody id="cpuTable">
+                    </tbody>
+                </table>
+            </div>
+            <div class="column">
+                <table class="table table-bordered table-side-by-side">
+                    <thead>Soket</thead>
+                    <tbody id="socketTable">
+                    </tbody>
+                </table>
+            </div>
+            <div class="column">
+                <table class="table table-bordered table-side-by-side">
+                    <thead>MotherBoard</thead>
+                    <tbody id="moBoTable">
+                    </tbody>
+                </table>
+            </div>
+            <div class="column">
+                <table class="table table-bordered table-side-by-side">
+                    <thead>PCI-e bus</thead>
+                    <tbody id="pciTable">
+                    </tbody>
+                </table>
+            </div>
+            <div class="column">
+                <table class="table table-bordered table-side-by-side">
+                    <thead>Gpu</thead>
+                    <tbody id="gpuTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+<#include "parts/setupTable.ftl">
 </body>
 </html>

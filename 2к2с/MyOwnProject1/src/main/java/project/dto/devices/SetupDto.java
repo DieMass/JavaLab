@@ -14,4 +14,5 @@ public class SetupDto {
 	private Long account;
 	private Long cpu;
 	private Long mobo;
+	private Long gpu;
 }

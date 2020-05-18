@@ -46,8 +46,8 @@ public class SignUpController {
 
     @PostMapping
     @PreAuthorize("permitAll()")
-    public ModelAndView getCourse(@RequestParam String name, @RequestParam String email, @RequestParam String password,
-                                  @Valid SignUpForm form, BindingResult bindingResult) {
+    public ModelAndView post(@RequestParam String name, @RequestParam String email, @RequestParam String password,
+                             @Valid SignUpForm form, BindingResult bindingResult) {
         ModelAndView mv = new ModelAndView("signup");
         if (!bindingResult.hasErrors()) {
             if(!userService.userExists(name)) {

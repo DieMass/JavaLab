@@ -1,6 +1,6 @@
 <!doctype html>
-<#import "spring.ftl" as spring />
 <html lang="en">
+<#import "spring.ftl" as spring />
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -13,45 +13,33 @@
             var password = document.getElementById("password").value;
             const toSend = {email: email, password: password};
             var xmlHttp = new XMLHttpRequest();
-            xmlHttp.open("post","/signin");
+            xmlHttp.open("post", "/signin");
             xmlHttp.setRequestHeader("Content-type", "application/json");
             xmlHttp.send(JSON.stringify(toSend));
         }
     </script>
+    <link rel="stylesheet" href="<@spring.url '/css/signIn.css'/>">
 </head>
-<body>
-<main class="page contact-page" style="margin-top: 50px;">
-    <section class="portfolio-block contact">
-        <div class="container">
-            <div class="heading">
-                <h2>Вход</h2>
-                <#if RequestParameters.error??>
-                    <h3 style="color: red">${RequestParameters.error}</h3>
-                </#if>
-            </div>
-            <form method="post">
-                <div class="form-group"><label for="email">Email</label><input class="form-control item" type="text"
-                                                                                id="email" name="email"
-                                                                                placeholder="Введите email"></div>
-                <div class="form-group"><label for="password">Пароль</label><input class="form-control item"
-                                                                                   type="password" id="password"
-                                                                                   name="password"
-                                                                                   placeholder="Введите пароль"></div>
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-                <label>
-                    <input type="checkbox" name="remember-me">Запомни меня
-                </label>
-                <div class="form-group">
-                    <button class="btn btn-primary btn-block btn-lg" type="submit"
-<#--                            onclick="signin()"-->
-                            style="background-color: rgb(140,90,64);border-color: rgb(140,90,64);">Войти
-                    </button>
-                </div>
-            </form>
-        </div>
-    </section>
-</main>
-<h1><@spring.message 'profile.page.welcome'/></h1>
-<h1><@spring.message 'profile.page.good.work'/></h1>
+<body style="font-family: 'Montserrat', sans-serif;">
+<#include "parts/header.ftl">
+<div class="login-page">
+    <div class="form">
+        <h2><@spring.message "signin.page.login"/></h2>
+        <#if RequestParameters.error??>
+            <h4 style="color: red">${RequestParameters.error}</h4>
+        </#if>
+        </br>
+        <form class="login-form" method="post">
+            <input type="text" placeholder="<@spring.message "signin.page.email"/>" id="email" name="email"/>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
+            <input type="password" placeholder="<@spring.message "signin.page.password"/>" id="password"
+                   name="password"/>
+            <input type="checkbox" name="remember-me"><br>Запомни меня
+            <button type="submit"><@spring.message "signin.page.signIn"/></button>
+            <p class="message"><@spring.message "signin.page.not"/> <a
+                        href="/signup"><@spring.message "signin.page.create"/></a></p>
+        </form>
+    </div>
+</div>
 </body>
 </html>

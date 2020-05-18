@@ -29,7 +29,6 @@ public class ImageServiceAspect {
         System.out.println("before sending");
         emailService.sendImage(userDetails.getUser().getEmail(), name);
         System.out.println("after sending");
-        System.out.println("В аспекте я поймал " + name);
     }
 
 }

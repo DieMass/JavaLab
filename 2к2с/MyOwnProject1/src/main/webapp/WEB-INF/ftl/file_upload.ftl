@@ -20,11 +20,11 @@
 <div>
     <form method="post" enctype="multipart/form-data">
         <input type="file" id="file" name="file" placeholder="Имя файла..."/>
+<#--        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">-->
         <button type="submit" value="Загрузить">
             Загрузить файл
         </button>
         <input type="hidden" id="file_hidden">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
     </form>
     <div class="filename"></div>
 </div>

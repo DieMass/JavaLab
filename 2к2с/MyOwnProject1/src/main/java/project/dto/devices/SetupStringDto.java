@@ -2,14 +2,17 @@ package project.dto.devices;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class ResponseCpuDto {
+@Getter
+public class SetupStringDto {
 
-	private CpuDto data;
+	private String cpuName;
+	private String moBoName;
+	private String gpuName;
+
 }

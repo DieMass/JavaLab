@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.stereotype.Component;
+import project.models.user.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,4 +40,17 @@ public class TokenServiceImpl implements TokenService {
         }
         return (String)claims.get(field);
     }
+
+    @Override
+    public String getЕбучийToken(User user) {
+        String token = Jwts.builder()
+                .setSubject(user.getId().toString()) // id пользователя
+                .claim("name", user.getName()) // имя
+                .claim("role", user.getRole().name()) // роль
+                .signWith(SignatureAlgorithm.HS256, "qwerty007") // подписываем его с нашим secret
+                .compact(); // преобразовали в строку
+        return token;
+    }
+
+
 }
