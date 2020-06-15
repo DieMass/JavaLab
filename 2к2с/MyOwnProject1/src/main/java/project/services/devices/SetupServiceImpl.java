@@ -2,6 +2,7 @@ package project.services.devices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import project.dto.devices.SetupStringDto;
 import project.models.user.Setup;
 import project.repositories.devices.SetupRepository;
@@ -30,6 +31,7 @@ public class SetupServiceImpl implements SetupService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteAll(Long userId) {
 		setupRepository.deleteByAccount(userId);
 	}

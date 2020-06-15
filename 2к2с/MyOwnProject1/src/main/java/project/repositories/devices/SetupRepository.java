@@ -19,3 +19,5 @@ public interface SetupRepository extends CrudRepository<Setup, Long> {
 	void deleteByAccount(Long userId);
 
 }
+
+

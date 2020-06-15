@@ -81,10 +81,7 @@ public class SecurityConfig {
 			auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 		}
 
-		@Autowired
-		public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-		}
+
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {

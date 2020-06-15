@@ -18,7 +18,6 @@ public class CpuRestController {
 	private CpuService cpuService;
 
 	@GetMapping("/list")
-//	@PreAuthorize("hasAuthority('ADMIN')")
 	@PreAuthorize("permitAll()")
 	public ResponseCpusDto doGet(@RequestParam(value = "page", defaultValue = "1") Integer page,
 								 @RequestParam(value = "size", defaultValue = "50") Integer size,

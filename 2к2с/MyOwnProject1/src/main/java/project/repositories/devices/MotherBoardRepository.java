@@ -9,3 +9,5 @@ public interface MotherBoardRepository extends CrudRepository<MotherBoard, Long>
 
 	List<MotherBoard> findBySocket(String socketName);
 }
+
+

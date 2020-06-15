@@ -45,13 +45,6 @@ public class LocalizationConfig implements WebMvcConfigurer {
 		return cookieLocaleResolver;
 	}
 
-//	@Bean
-//	public LocalValidatorFactoryBean getValidator() {
-//		LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
-//		bean.setValidationMessageSource(messageSource());
-//		return bean;
-//	}
-
 	// говорим, где находятся наши файлы с локализацией
 	@Bean
 	public MessageSource messageSource() {

@@ -15,20 +15,19 @@ import project.services.users.email.EmailService;
 @Component
 public class ImageServiceAspect {
 
-    @Autowired
-    private EmailService emailService;
+	@Autowired
+	private EmailService emailService;
 
-    @Pointcut("execution(* project.services.users.StorageServiceImpl.store(..))")
-    private String store(){
-        return null;
-    }
+	@Pointcut("execution(* project.services.users.StorageServiceImpl.store(..))")
+	private String store(){
+		return null;
+	}
 
-    @AfterReturning(pointcut = "store() && args(multipartFile, authentication)", returning = "name")
-    public void afterReturningAdvice(String name, MultipartFile multipartFile, Authentication authentication) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        System.out.println("before sending");
-        emailService.sendImage(userDetails.getUser().getEmail(), name);
-        System.out.println("after sending");
-    }
-
+	@AfterReturning(pointcut = "store() && args(multipartFile, authentication)", returning = "name")
+	public void afterReturningAdvice(String name, MultipartFile multipartFile, Authentication authentication) {
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		System.out.println("before sending");
+		emailService.sendImage(userDetails.getUser().getEmail(), name);
+		System.out.println("after sending");
+	}
 }

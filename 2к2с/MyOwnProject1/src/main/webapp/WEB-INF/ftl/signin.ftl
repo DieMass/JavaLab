@@ -34,7 +34,7 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
             <input type="password" placeholder="<@spring.message "signin.page.password"/>" id="password"
                    name="password"/>
-            <input type="checkbox" name="remember-me"><br>Запомни меня
+            <input type="checkbox" name="remember-me"> Запомни меня<br>
             <button type="submit"><@spring.message "signin.page.signIn"/></button>
             <p class="message"><@spring.message "signin.page.not"/> <a
                         href="/signup"><@spring.message "signin.page.create"/></a></p>

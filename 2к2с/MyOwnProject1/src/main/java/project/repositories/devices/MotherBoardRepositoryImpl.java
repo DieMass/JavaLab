@@ -31,7 +31,8 @@ public class MotherBoardRepositoryImpl extends RepositoryImpl<MotherBoard, Long>
 	}
 
 	public List<MotherBoard> findBySocket(String socketName) {
-		return entityManager.createQuery("select m from MotherBoard m where m.socket.name = :socketName", MotherBoard.class)
+		return entityManager.createQuery("select m from MotherBoard m where m.socket.name = :socketName",
+				MotherBoard.class)
 				.setParameter("socketName", socketName).getResultList();
 	}
 

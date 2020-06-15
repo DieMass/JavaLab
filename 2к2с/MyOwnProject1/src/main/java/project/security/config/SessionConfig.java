@@ -8,9 +8,4 @@ import org.springframework.session.web.context.AbstractHttpSessionApplicationIni
 @EnableJdbcHttpSession
 public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
-//	@Bean
-//	public PlatformTransactionManager transactionManager(DataSource dataSource) {
-//		return new DataSourceTransactionManager(dataSource);
-//	}
-
 }

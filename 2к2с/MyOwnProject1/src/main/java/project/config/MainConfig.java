@@ -46,7 +46,6 @@ public class MainConfig {
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
 		hibernateJpaVendorAdapter.setDatabase(Database.POSTGRESQL);
-
 		LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactory.setDataSource(hikariDataSource());
 		entityManagerFactory.setPackagesToScan("project");
