@@ -1,0 +1,7 @@
+POST http://localhost:8089/api
+Content-Type: application/json
+
+{"id":  4,
+"name":  "DieMass"}
+
+###
