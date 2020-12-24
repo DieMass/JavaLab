@@ -1,0 +1,3 @@
+GET http://localhost:5644/accounts/search?series=fx228
+
+###

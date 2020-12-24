@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,8 +18,9 @@ import javax.persistence.Id;
 public class Cpu {
 
 	@Id
-	private String _id;
+	private ObjectId _id;
 	private String series;
 	private Integer cores;
-	private Socket socket;
+	@DBRef
+	private ObjectId socket;
 }

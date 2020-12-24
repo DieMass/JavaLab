@@ -1,4 +1,4 @@
-package die.mass.mongo.jpa.repositories;
+package die.mass.mongo.jpa;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
