@@ -1,0 +1,25 @@
+= Описание API по сборкам
+
+== Методы
+
+|===
+|Метод | Назначение
+|`PUT`
+|Обновить сущность или ее состояние
+|===
+
+=== Публикация курса
+
+Можно опубликовать сборки со статусом *PUBLISHED*
+
+.request
+
+include::{snippets}/publish_customSetup/http-request.adoc[]
+
+.response
+
+include::{snippets}/publish_customSetup/http-response.adoc[]
+
+.response-fields
+
+include::{snippets}/publish_customSetup/response-fields.adoc[]
