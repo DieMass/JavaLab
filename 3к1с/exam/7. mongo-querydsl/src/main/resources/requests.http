@@ -1,0 +1,3 @@
+GET http://localhost:5644/cpu/search?series=fx228
+
+###
